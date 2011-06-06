@@ -46,3 +46,8 @@ pkg
 
 # For rubinius:
 #*.rbc
+
+*.iml
+*.ipr
+*.iws
+.rakeTasks
