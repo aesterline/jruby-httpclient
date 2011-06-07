@@ -1,5 +1,9 @@
+TEST_DIR = File.dirname(__FILE__)
+LIB_DIR = File.join(TEST_DIR, '..', 'lib')
+
 require 'rubygems'
 require 'bundler'
+
 begin
   Bundler.setup(:default, :development)
 rescue Bundler::BundlerError => e
@@ -9,9 +13,8 @@ rescue Bundler::BundlerError => e
 end
 require 'test/unit'
 
-$LOAD_PATH.unshift(File.dirname(__FILE__))
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-require 'jruby-httpclient'
+$LOAD_PATH.unshift(TEST_DIR) unless $LOAD_PATH.include?(TEST_DIR)
+$LOAD_PATH.unshift(LIB_DIR) unless $LOAD_PATH.include?(LIB_DIR)
 
-class Test::Unit::TestCase
-end
+require 'http_client'
+require 'webrick'
