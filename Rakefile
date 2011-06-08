@@ -14,13 +14,14 @@ require 'rake'
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "http_client"
+  gem.name = "jruby-httpclient"
   gem.homepage = "http://github.com/aesterline/jruby-httpclient"
   gem.license = "Apache 2.0"
   gem.summary = %Q{A thin wrapper around the Apache HttpClient}
   gem.description = %Q{An HTTP client designed for use with JRuby in a threaded environment}
   gem.email = "adam@esterlines.com"
   gem.authors = ["Adam Esterline"]
+  gem.platform = Gem::Platform::JAVA
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
