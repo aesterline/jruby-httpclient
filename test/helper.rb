@@ -18,3 +18,6 @@ $LOAD_PATH.unshift(LIB_DIR) unless $LOAD_PATH.include?(LIB_DIR)
 
 require 'http_client'
 require 'webrick'
+require 'http_test_server'
+
+HTTP::TestServer.start_server
