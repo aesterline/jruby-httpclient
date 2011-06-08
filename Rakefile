@@ -15,10 +15,10 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "http_client"
-  gem.homepage = "http://github.com/aesterline/http_client"
-  gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.homepage = "http://github.com/aesterline/jruby-httpclient"
+  gem.license = "Apache 2.0"
+  gem.summary = %Q{A thin wrapper around the Apache HttpClient}
+  gem.description = %Q{An HTTP client designed for use with JRuby in a threaded environment}
   gem.email = "adam@esterlines.com"
   gem.authors = ["Adam Esterline"]
   # dependencies defined in Gemfile
