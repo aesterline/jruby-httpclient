@@ -1,6 +1,14 @@
 = jruby-httpclient
 
-Description goes here.
+jruby-httpclient is a thin wrapper around Apache's HttpClient (version 4.1).   I found that Net::HTTP was
+not threadsafe in JRuby.    This project is an attempt to make a threadsafe HTTP client for JRuby.
+
+== Usage
+
+client = HTTP::Client.new(:host => "localhost", :port => 8080)
+client.get("/src", :param => "value")
+
+client.post("/create", :param => "value")
 
 == Contributing to jruby-httpclient
  
