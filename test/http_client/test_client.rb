@@ -14,11 +14,10 @@ class TestClient < Test::Unit::TestCase
   end
 
   def test_timeout
-    client = HTTP::Client.new(:host => "localhost", :port => 8080)
-    @client.timeout_in_seconds = 2
+    client = HTTP::Client.new(:host => "localhost", :port => 8080, :timeout_in_seconds => 2)
 
     assert_raises(Timeout::Error) do
-      @client.get("/slow", :sleep => "30")
+      client.get("/slow", :sleep => "30")
     end
   end
 

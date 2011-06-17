@@ -1,14 +1,12 @@
 module HTTP
   class Client
     attr_reader :protocol, :host, :port, :timeout_in_seconds
-    attr_writer :timeout_in_seconds
 
     def initialize(options = {})
       @host = options[:host] || "localhost"
       @port = options[:port] || 8080
       @protocol = options[:protocol] || "http"
-
-      @timeout_in_seconds = 30
+      @timeout_in_seconds = options[:timeout_in_seconds] || 30
     end
 
     def get(path, options = {})
