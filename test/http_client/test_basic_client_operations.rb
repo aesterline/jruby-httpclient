@@ -1,6 +1,6 @@
 require 'helper'
 
-class TestClient < Test::Unit::TestCase
+class TestBasicClientOperations < Test::Unit::TestCase
   def test_simple_get
     result = @client.get("/echo", :content => "hello")
 

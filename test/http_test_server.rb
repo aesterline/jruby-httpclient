@@ -5,7 +5,33 @@ module HTTP
     def self.start_server
       SERVER.mount('/echo', EchoServlet)
       SERVER.mount('/slow', SlowServlet)
+      SERVER.mount('/echo_test_header', HeaderEchoServlet)
       Thread.new { SERVER.start }
+    end
+
+    class HeaderEchoServlet < WEBrick::HTTPServlet::AbstractServlet
+      def do_GET(request, response)
+        echo_header(request, response)
+      end
+
+      def do_POST(request, response)
+        echo_header(request, response)
+      end
+
+      def do_DELETE(request, response)
+        echo_header(request, response)
+      end
+
+      def do_PUT(request, response)
+        echo_header(request, response)
+      end
+
+      private
+      def echo_header(request, response)
+        response.status = 200
+        response['Content-Type'] = 'text/plain'
+        response.body = request.header["test_header"].first
+      end
     end
 
     class EchoServlet < WEBrick::HTTPServlet::AbstractServlet
