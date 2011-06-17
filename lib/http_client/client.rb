@@ -1,11 +1,16 @@
+require 'uri'
+
 module HTTP
   class Client
-    def initialize(options = {})
+    def initialize(*params)
+      options = parse_options(params)
+
       host = options[:host] || "localhost"
       port = options[:port] || 8080
-      protocol = options[:protocol] || "http"
+      protocol = options[:scheme] || "http"
+      base_path = options[:base_path] || ""
 
-      @uri_builder = URIBuilder.new(protocol, host, port)
+      @uri_builder = URIBuilder.new(protocol, host, port, base_path)
       @timeout_in_seconds = options[:timeout_in_seconds] || 30
       @encoding = options[:encoding] || "UTF-8"
     end
@@ -42,17 +47,33 @@ module HTTP
       DefaultHttpClient.set_default_http_params(params)
       params.set_int_parameter(CoreConnectionPNames::SO_TIMEOUT, @timeout_in_seconds * 1000)
     end
+
+    def parse_options(params)
+      options = {}
+
+      params.reverse.each do |param|
+        if param.kind_of?(Hash)
+          options = param.merge(options)
+        else
+          uri = URI.parse(param)
+          options = {:host => uri.host, :port => uri.port, :scheme => uri.scheme, :base_path => uri.path}.merge(options)
+        end
+      end
+
+      options
+    end
   end
 
   class URIBuilder
-    def initialize(protocol, host, port)
+    def initialize(protocol, host, port, base_path)
       @protocol = protocol
       @host = host
       @port = port
+      @base_path = base_path
     end
 
     def create_uri(path, query_string = nil)
-      URIUtils.create_uri(@protocol, @host, @port, path, query_string, nil)
+      URIUtils.create_uri(@protocol, @host, @port, "#{@base_path}#{path}", query_string, nil)
     end
   end
 
