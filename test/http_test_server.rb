@@ -18,11 +18,19 @@ module HTTP
         echo(request, response)
       end
 
+      def do_DELETE(request, response)
+        echo(request, response, "delete")
+      end
+
+      def do_PUT(request, response)
+        echo(request, response, "put")
+      end
+
       private
-      def echo(request, response)
+      def echo(request, response, canned_response = nil)
         response.status = 200
         response['Content-Type'] = 'text/plain'
-        response.body = request.query['content']
+        response.body = canned_response || request.query['content']
       end
     end
 

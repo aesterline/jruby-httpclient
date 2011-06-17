@@ -13,6 +13,18 @@ class TestClient < Test::Unit::TestCase
     assert_equal("world", result)
   end
 
+  def test_simple_delete
+    result = @client.delete("/echo")
+
+    assert_equal("delete", result)
+  end
+
+  def test_simple_put
+    result = @client.put("/echo")
+
+    assert_equal("put", result)
+  end
+
   def test_timeout
     client = HTTP::Client.new(:host => "localhost", :port => 8080, :timeout_in_seconds => 2)
 
