@@ -5,7 +5,7 @@ module HTTP
     def self.start_server
       SERVER.mount('/echo', EchoServlet)
       SERVER.mount('/slow', SlowServlet)
-      SERVER.mount('/echo_test_header', HeaderEchoServlet)
+      SERVER.mount('/echo_header', HeaderEchoServlet)
       Thread.new { SERVER.start }
     end
 
@@ -28,9 +28,11 @@ module HTTP
 
       private
       def echo_header(request, response)
+        header_to_echo = request.query['header'] || 'test_header'
+
         response.status = 200
         response['Content-Type'] = 'text/plain'
-        response.body = request.header["test_header"].first
+        response.body = request.header[header_to_echo].first
       end
     end
 

@@ -12,6 +12,10 @@ module HTTP
           @headers.merge!(headers)
         end
 
+        def content_type=(type)
+          add_headers({'content-type' => type})
+        end
+
         define_method(:create_native_request) do |uri_builder, encoding|
           params = @params.collect { |key, value| BasicNameValuePair.new(key.to_s, value.to_s) }
           request = native_request_factory.call(uri_builder, @path, params, encoding)
