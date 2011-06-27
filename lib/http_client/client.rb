@@ -88,6 +88,14 @@ module HTTP
       protocol  = options[:scheme] || "http"
       base_path = options[:base_path] || ""
 
+      if options[:disable_response_handler]
+        @response_handler = nil
+      elsif options[:response_handler]
+        @response_handler = options[:response_handler]
+      else
+        BasicResponseHandler.new
+      end
+      
       @uri_builder = URIBuilder.new(protocol, host, port, base_path)
       @encoding = options[:encoding] || "UTF-8"
       @params   = BasicHttpParams.new
@@ -155,7 +163,11 @@ module HTTP
     def execute(request)
       native_request = request.create_native_request(@uri_builder, @encoding)
       client = DefaultHttpClient.new(@params)
-      client.execute(native_request, BasicResponseHandler.new)
+      if @response_handler
+        client.execute(native_request, @response_handler)
+      else
+        client.execute(native_request)
+      end
     rescue SocketTimeoutException
       raise Timeout::Error, "timed out after #{so_timeout} ms"
     ensure
