@@ -1,9 +1,9 @@
 require 'uri'
-
 module HTTP
   DefaultHttpClient      = org.apache.http.impl.client.DefaultHttpClient
   BasicResponseHandler   = org.apache.http.impl.client.BasicResponseHandler
   BasicHttpParams        = org.apache.http.params.BasicHttpParams
+  HttpHost               = org.apache.http.HttpHost
   CoreProtocolPNames     = org.apache.http.params.CoreProtocolPNames
   CoreConnectionPNames   = org.apache.http.params.CoreConnectionPNames
   ConnRoutePNames        = org.apache.http.conn.params.ConnRoutePNames
@@ -11,8 +11,8 @@ module HTTP
   AuthPNames             = org.apache.http.auth.params.AuthPNames
   ClientPNames           = org.apache.http.client.params.ClientPNames
   SocketTimeoutException = java.net.SocketTimeoutException
-  class Client
-    CLIENT_PARAM_CLASSES = {
+  class Client    
+    CLIENT_PARAMETERS = {
       :protocol_version         => HTTP::CoreProtocolPNames::PROTOCOL_VERSION,
       :strict_transfer_encoding => HTTP::CoreProtocolPNames::STRICT_TRANSFER_ENCODING,
       :http_element_charset     => HTTP::CoreProtocolPNames::HTTP_ELEMENT_CHARSET,
@@ -28,7 +28,7 @@ module HTTP
       :max_line_length          => HTTP::CoreConnectionPNames.MAX_LINE_LENGTH,
       :max_header_count         => HTTP::CoreConnectionPNames.MAX_HEADER_COUNT,
       :stale_connection_check   => HTTP::CoreConnectionPNames.STALE_CONNECTION_CHECK,
-      :forced_route             => HTTP::ConnRoutePNames::FORCED_ROUTE,
+      # :forced_route             => HTTP::ConnRoutePNames::FORCED_ROUTE, # not implemented
       :local_address            => HTTP::ConnRoutePNames::LOCAL_ADDRESS,
       :default_proxy            => HTTP::ConnRoutePNames::DEFAULT_PROXY,
       :date_patterns            => HTTP::CookieSpecPNames::DATE_PATTERNS,
@@ -40,31 +40,102 @@ module HTTP
       :max_redirects            => HTTP::ClientPNames::MAX_REDIRECTS,
       :allow_circular_redirects => HTTP::ClientPNames::ALLOW_CIRCULAR_REDIRECTS,
       :virtual_host             => HTTP::ClientPNames::VIRTUAL_HOST,
-      :default_host             => HTTP::ClientPNames::DEFAULT_HOST,
-      :default_headers          => HTTP::ClientPNames::DEFAULT_HEADERS,
-      :connection_manager_factory_class_name => HTTP::ClientPNames::CONNECTION_MANAGER_FACTORY_CLASS_NAME
+      :default_host             => HTTP::ClientPNames::DEFAULT_HOST
+      # :default_headers          => HTTP::ClientPNames::DEFAULT_HEADERS, # not implemented
+      # :connection_manager_factory_class_name => HTTP::ClientPNames::CONNECTION_MANAGER_FACTORY_CLASS_NAME # not implemented
     }
     
-    def initialize(*params)
-      # Strip out the client params into another hash
-      @client_params = {}
-      params.each do |k,v|
-        @client_params[k] = params.delete(k) if CLIENT_PARAM_CLASSES[k]
+    INTEGER_PARAMETER_SETTERS = [
+      :so_timeout, :so_linger, :socket_buffer_size, :connection_timeout,
+      :max_line_length, :max_header_count, :max_redirects
+    ]
+        
+    SIMPLE_PARAMETER_SETTERS = [
+      :strict_transfer_encoding, :http_element_charset, :use_expect_continue,
+      :wait_for_continue, :user_agent, :tcp_nodelay, :so_reuseaddr,
+      :stale_connection_check, :date_patterns, :single_cookie_header,
+      :credential_charset, :cookie_policy, :handle_authentication,
+      :handle_redirects, :allow_circular_redirects
+    ]
+        
+    def initialize(*params)      
+      self.class.class_eval do
+        # Setup dynamic getters (setters can be more complex)
+        CLIENT_PARAMETERS.each do |method_name, param_class|
+          define_method method_name do
+            @params.get_parameter param_class
+          end
+        end
+        
+        INTEGER_PARAMETER_SETTERS.each do |method_name|
+          define_method "#{method_name}=" do |arg|
+            @params.set_int_parameter CLIENT_PARAMETERS[method_name], arg
+          end
+        end
+        
+        # For those params that our simple, we'll create the setters
+        SIMPLE_PARAMETER_SETTERS.each do |method_name|
+          define_method "#{method_name}=" do |arg|
+            @params.set_parameter CLIENT_PARAMETERS[method_name], arg
+          end
+        end
       end
       
       # Parse the remaining options
-      options = parse_options(params)
-
-      host = options[:host] || "localhost"
-      port = options[:port] || 8080
-      protocol = options[:scheme] || "http"
+      options   = parse_options(params)      
+      host      = options[:host] || "localhost"
+      port      = options[:port] || 8080
+      protocol  = options[:scheme] || "http"
       base_path = options[:base_path] || ""
 
       @uri_builder = URIBuilder.new(protocol, host, port, base_path)
-      @client_params[:so_timeout] = options[:timeout_in_seconds] ? options[:timeout_in_seconds] * 1000 : 30000
       @encoding = options[:encoding] || "UTF-8"
-    end
+      @params   = BasicHttpParams.new
+      DefaultHttpClient.set_default_http_params(@params)
+      
+      # Handle a custom setting for "timemout_in_seconds" and or "so_timeout"
+      if options[:timeout_in_seconds]
+        self.so_timeout = options[:timeout_in_seconds] * 1000
+      elsif options[:so_timeout]
+        self.so_timeout = options[:so_timeout]
+      else
+        self.so_timeout = 30000
+      end
 
+      # Set options from the rest of the options-hash      
+      CLIENT_PARAMETERS.each do |method_name, param_class|
+        self.send("#{method_name}=", options[method_name]) if options[method_name]
+      end
+    end
+    
+    # Advanced Setters
+    
+    def protocol_version=(version_string)
+      protocol, major_version, minor_version = version_string.split(/[\.|\s|\/]/)
+      @params.set_parameter HTTP::CoreProtocolPNames::PROTOCOL_VERSION, org.apache.http.ProtocolVersion.new(protocol, major_version.to_i, minor_version.to_i)
+    end    
+        
+    def local_address=(local_addr_str)
+      @params.set_parameter HTTP::ConnRoutePNames::LOCAL_ADDRESS, java.net.InetAddress.getByName(local_addr_str)
+    end
+    
+    def default_proxy=(host)
+      uri = URI.parse host
+      @params.set_parameter HTTP::ConnRoutePNames::DEFAULT_PROXY, HTTP::HttpHost.new(uri.host, uri.port, uri.scheme)
+    end
+    
+    def virtual_host=(host)
+      uri = URI.parse host
+      @params.set_parameter HTTP::ClientPNames::VIRTUAL_HOST, HTTP::HttpHost.new(uri.host, uri.port, uri.scheme)
+    end
+    
+    def default_host=(host)
+      uri = URI.parse host
+      @params.set_parameter HTTP::ClientPNames::DEFAULT_HOST, HTTP::HttpHost.new(uri.host, uri.port, uri.scheme)
+    end
+    
+    # Request Methods
+    
     def get(params, options = {})
       execute(Get.new(params, options))
     end
@@ -83,23 +154,15 @@ module HTTP
 
     def execute(request)
       native_request = request.create_native_request(@uri_builder, @encoding)
-      client = DefaultHttpClient.new(create_client_params)
+      client = DefaultHttpClient.new(@params)
       client.execute(native_request, BasicResponseHandler.new)
     rescue SocketTimeoutException
-      raise Timeout::Error, "timed out after #{@client_params[:so_timeout]} ms"
+      raise Timeout::Error, "timed out after #{so_timeout} ms"
     ensure
       client.connection_manager.shutdown
     end
 
     private
-    def create_client_params
-      params = BasicHttpParams.new
-      DefaultHttpClient.set_default_http_params(params)
-      # Set any customized client parameters
-      @client_params.each { |k,v| params.set_int_parameter(CLIENT_PARAM_CLASSES[k], v) }
-      params
-    end
-
     def parse_options(params)
       options = {}
 
