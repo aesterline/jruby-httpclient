@@ -12,5 +12,6 @@ require 'httpmime-4.1.1'
 require 'httpclient-4.1.1'
 require 'httpclient-cache-4.1.1'
 
-require 'client'
+require 'parameters'
 require 'methods'
+require 'client'
