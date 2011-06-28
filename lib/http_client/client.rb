@@ -32,9 +32,9 @@ module HTTP
     end
 
     def execute(request)
-      native_request = request.create_native_request(@uri_builder, @encoding)
       client = DefaultHttpClient.new(create_client_params)
-      client.execute(native_request, BasicResponseHandler.new)
+
+      request.make_native_request(client, @uri_builder, @encoding)
     rescue SocketTimeoutException
       raise Timeout::Error, "timed out after #{@timeout_in_seconds} seconds"
     ensure
@@ -78,7 +78,6 @@ module HTTP
   end
 
   DefaultHttpClient = org.apache.http.impl.client.DefaultHttpClient
-  BasicResponseHandler = org.apache.http.impl.client.BasicResponseHandler
   BasicHttpParams = org.apache.http.params.BasicHttpParams
   CoreConnectionPNames = org.apache.http.params.CoreConnectionPNames
   SocketTimeoutException = java.net.SocketTimeoutException

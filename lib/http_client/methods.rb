@@ -16,6 +16,22 @@ module HTTP
           add_headers({'content-type' => type})
         end
 
+        def basic_auth(username, password)
+          @username = username
+          @password = password
+        end
+
+        def make_native_request(client, uri_builder, encoding)
+          request = create_native_request(uri_builder, encoding)
+
+          unless @username.nil?
+            client.credentials_provider.set_credentials(AuthScope::ANY, UsernamePasswordCredentials.new(@username, @password))
+          end
+
+          client.execute(request, BasicResponseHandler.new)
+        end
+
+        private
         define_method(:create_native_request) do |uri_builder, encoding|
           params = @params.collect { |key, value| BasicNameValuePair.new(key.to_s, value.to_s) }
           request = native_request_factory.call(uri_builder, @path, params, encoding)
@@ -57,4 +73,7 @@ module HTTP
   URIUtils = org.apache.http.client.utils.URIUtils
   URLEncodedUtils = org.apache.http.client.utils.URLEncodedUtils
   UrlEncodedFormEntity = org.apache.http.client.entity.UrlEncodedFormEntity
+  BasicResponseHandler = org.apache.http.impl.client.BasicResponseHandler
+  AuthScope = org.apache.http.auth.AuthScope
+  UsernamePasswordCredentials = org.apache.http.auth.UsernamePasswordCredentials
 end

@@ -6,7 +6,19 @@ module HTTP
       SERVER.mount('/echo', EchoServlet)
       SERVER.mount('/slow', SlowServlet)
       SERVER.mount('/echo_header', HeaderEchoServlet)
+      SERVER.mount('/protected', ProtectedServlet)
       Thread.new { SERVER.start }
+    end
+
+    class ProtectedServlet < WEBrick::HTTPServlet::AbstractServlet
+      def do_GET(request, response)
+        WEBrick::HTTPAuth.basic_auth(request, response, "Mine") do |user, pass|
+          user == "user" && pass == "Password"
+        end
+
+        response.status = 200
+        response.body = "Logged In"
+      end
     end
 
     class HeaderEchoServlet < WEBrick::HTTPServlet::AbstractServlet
