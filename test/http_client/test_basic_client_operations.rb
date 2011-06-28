@@ -49,6 +49,18 @@ class TestBasicClientOperations < Test::Unit::TestCase
     assert_equal("put", result)
   end
 
+  def test_get_can_take_parameters_in_url
+    result = @client.get("http://localhost:8080/echo?content=bar")
+
+    assert_equal("bar", result)
+  end
+
+  def test_get_url_parameters_take_precedence_over_optional_parameters
+    result = @client.get("http://localhost:8080/echo?content=bar", :content => "zed")
+
+    assert_equal("bar", result)
+  end
+
   def setup
     @client = HTTP::Client.new(:default_host => "http://localhost:8080")
   end

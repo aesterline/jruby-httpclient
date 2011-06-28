@@ -1,3 +1,5 @@
+require 'cgi'
+
 module HTTP
   class Request
     def self.create_type(&native_request_factory)
@@ -42,15 +44,17 @@ module HTTP
 
         def parse_uri
           uri = URI.parse(@uri)
-          [uri.scheme, uri.host, uri.port, uri.path]
+          [uri.scheme, uri.host, uri.port, uri.path, uri.query]
         rescue URI::InvalidURIError
-          [nil, nil, nil, @uri]
+          [nil, nil, nil, @uri, nil]
         end
 
         private
         define_method(:create_native_request) do |encoding|
-          params = @params.collect { |key, value| BasicNameValuePair.new(key.to_s, value.to_s) }
-          scheme, host, port, path = parse_uri
+          scheme, host, port, path, query = parse_uri
+          query_params = CGI.parse(query || "").merge(@params)
+
+          params = query_params.collect { |key, value| BasicNameValuePair.new(key.to_s, value.to_s) }
           request = native_request_factory.call(scheme, host, port, path, params, encoding)
 
           @headers.each { |name, value| request.add_header(name.to_s, value.to_s) }
