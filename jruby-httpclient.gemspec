@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{jruby-httpclient}
-  s.version = "0.2.1"
+  s.version = "0.3.0"
   s.platform = Gem::Platform.new([nil, "java", nil])
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
@@ -35,6 +35,8 @@ Gem::Specification.new do |s|
     "test/http_client/test_basic_client_operations.rb",
     "test/http_client/test_client_headers.rb",
     "test/http_client/test_client_parameters.rb",
+    "test/http_client/test_cookies.rb",
+    "test/http_client/test_redirect.rb",
     "test/http_client/test_request_entity.rb",
     "test/http_test_server.rb",
     "vendor/commons-codec-1.4.jar",
