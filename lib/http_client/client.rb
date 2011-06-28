@@ -59,29 +59,26 @@ module HTTP
         :handle_redirects, :allow_circular_redirects
     ]
 
-    def initialize(options = {})
-      self.class.class_eval do
-        # Setup dynamic getters (setters can be more complex)
-        CLIENT_PARAMETERS.each do |method_name, param_class|
-          define_method method_name do
-            @params.get_parameter param_class
-          end
-        end
-
-        INTEGER_PARAMETER_SETTERS.each do |method_name|
-          define_method "#{method_name}=" do |arg|
-            @params.set_int_parameter CLIENT_PARAMETERS[method_name], arg
-          end
-        end
-
-        # For those params that our simple, we'll create the setters
-        SIMPLE_PARAMETER_SETTERS.each do |method_name|
-          define_method "#{method_name}=" do |arg|
-            @params.set_parameter CLIENT_PARAMETERS[method_name], arg
-          end
-        end
+    CLIENT_PARAMETERS.each do |method_name, param_class|
+      define_method method_name do
+        @params.get_parameter param_class
       end
+    end
 
+    INTEGER_PARAMETER_SETTERS.each do |method_name|
+      define_method "#{method_name}=" do |arg|
+        @params.set_int_parameter CLIENT_PARAMETERS[method_name], arg
+      end
+    end
+
+    # For those params that our simple, we'll create the setters
+    SIMPLE_PARAMETER_SETTERS.each do |method_name|
+      define_method "#{method_name}=" do |arg|
+        @params.set_parameter CLIENT_PARAMETERS[method_name], arg
+      end
+    end
+
+    def initialize(options = {})
       if options[:disable_response_handler]
         @response_handler = nil
       elsif options[:response_handler]
