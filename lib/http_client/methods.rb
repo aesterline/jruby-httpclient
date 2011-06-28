@@ -82,7 +82,6 @@ module HTTP
   URIUtils = org.apache.http.client.utils.URIUtils
   URLEncodedUtils = org.apache.http.client.utils.URLEncodedUtils
   UrlEncodedFormEntity = org.apache.http.client.entity.UrlEncodedFormEntity
-  BasicResponseHandler = org.apache.http.impl.client.BasicResponseHandler
   AuthScope = org.apache.http.auth.AuthScope
   UsernamePasswordCredentials = org.apache.http.auth.UsernamePasswordCredentials
   StringEntity = org.apache.http.entity.StringEntity
