@@ -7,7 +7,20 @@ module HTTP
       SERVER.mount('/slow', SlowServlet)
       SERVER.mount('/echo_header', HeaderEchoServlet)
       SERVER.mount('/protected', ProtectedServlet)
+      SERVER.mount('/body', BodyServlet)
       Thread.new { SERVER.start }
+    end
+
+    class BodyServlet < WEBrick::HTTPServlet::AbstractServlet
+      def do_POST(request, response)
+        response.status = 200
+        response.body = request.body
+      end
+
+      def do_PUT(request, response)
+        response.status = 200
+        response.body = request.body
+      end
     end
 
     class ProtectedServlet < WEBrick::HTTPServlet::AbstractServlet

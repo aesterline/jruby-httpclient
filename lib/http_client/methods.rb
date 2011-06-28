@@ -16,6 +16,10 @@ module HTTP
           add_headers({'content-type' => type})
         end
 
+        def body=(request_body)
+          @body = request_body
+        end
+
         def basic_auth(username, password)
           @username = username
           @password = password
@@ -23,6 +27,7 @@ module HTTP
 
         def make_native_request(client, uri_builder, encoding, handler=nil)
           request = create_native_request(uri_builder, encoding)
+          request.entity = StringEntity.new(@body) unless @body.nil?
 
           unless @username.nil?
             client.credentials_provider.set_credentials(AuthScope::ANY, UsernamePasswordCredentials.new(@username, @password))
@@ -80,4 +85,5 @@ module HTTP
   BasicResponseHandler = org.apache.http.impl.client.BasicResponseHandler
   AuthScope = org.apache.http.auth.AuthScope
   UsernamePasswordCredentials = org.apache.http.auth.UsernamePasswordCredentials
+  StringEntity = org.apache.http.entity.StringEntity
 end
