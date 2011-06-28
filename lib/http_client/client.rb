@@ -161,13 +161,9 @@ module HTTP
     end
 
     def execute(request)
-      native_request = request.create_native_request(@uri_builder, @encoding)
-      client = DefaultHttpClient.new(@params)
-      if @response_handler
-        client.execute(native_request, @response_handler)
-      else
-        client.execute(native_request)
-      end
+      client = DefaultHttpClient.new(create_client_params)
+
+      request.make_native_request(client, @uri_builder, @encoding)
     rescue SocketTimeoutException
       raise Timeout::Error, "timed out after #{so_timeout} ms"
     ensure
