@@ -9,7 +9,23 @@ module HTTP
       SERVER.mount('/protected', ProtectedServlet)
       SERVER.mount('/body', BodyServlet)
       SERVER.mount('/redirect', RedirectServlet)
+      SERVER.mount('/set_cookie', SetCookieServlet)
+      SERVER.mount('/echo_cookie', EchoCookieServlet)
       Thread.new { SERVER.start }
+    end
+
+    class SetCookieServlet < WEBrick::HTTPServlet::AbstractServlet
+      def do_GET(request, response)
+        response.cookies << WEBrick::Cookie.new("test_cookie", request.query['cookie'])
+      end
+    end
+
+    class EchoCookieServlet < WEBrick::HTTPServlet::AbstractServlet
+      def do_GET(request, response)
+        puts request.cookies.length
+        cookie = request.cookies.find { |c| c.name == "test_cookie" }
+        response.body = cookie.value
+      end
     end
 
     class RedirectServlet < WEBrick::HTTPServlet::AbstractServlet

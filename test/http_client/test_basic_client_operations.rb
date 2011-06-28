@@ -52,4 +52,8 @@ class TestBasicClientOperations < Test::Unit::TestCase
   def setup
     @client = HTTP::Client.new(:default_host => "http://localhost:8080")
   end
+
+  def teardown
+    @client.shutdown
+  end
 end

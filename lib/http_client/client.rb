@@ -26,6 +26,8 @@ module HTTP
         setter_name = "#{parameter_name}="
         self.send(setter_name, parameter_value) if self.respond_to?(setter_name)
       end
+
+      @client = DefaultHttpClient.new(params)
     end
 
     # Request Methods
@@ -47,13 +49,13 @@ module HTTP
     end
 
     def execute(request)
-      client = DefaultHttpClient.new(params)
-
-      request.make_native_request(client, @encoding, @response_handler)
+      request.make_native_request(@client, @encoding, @response_handler)
     rescue SocketTimeoutException
       raise Timeout::Error, "timed out after #{so_timeout} ms"
-    ensure
-      client.connection_manager.shutdown
+    end
+
+    def shutdown
+      @client.connection_manager.shutdown
     end
   end
 end

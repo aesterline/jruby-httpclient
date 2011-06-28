@@ -7,6 +7,7 @@ module HTTP
   CookieSpecPNames = org.apache.http.cookie.params.CookieSpecPNames
   AuthPNames = org.apache.http.auth.params.AuthPNames
   ClientPNames = org.apache.http.client.params.ClientPNames
+  CookiePolicy = org.apache.http.client.params.CookiePolicy
 
   module Parameters
     CLIENT_PARAMETERS = {
