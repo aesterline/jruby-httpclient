@@ -2,8 +2,8 @@ module HTTP
   class Request
     def self.create_type(&native_request_factory)
       Class.new do
-        def initialize(path, params = {})
-          @path = path
+        def initialize(uri, params = {})
+          @uri = uri
           @params = params
           @headers = {}
         end
@@ -25,8 +25,8 @@ module HTTP
           @password = password
         end
 
-        def make_native_request(client, uri_builder, encoding, handler=nil)
-          request = create_native_request(uri_builder, encoding)
+        def make_native_request(client, encoding, handler=nil)
+          request = create_native_request(encoding)
           request.entity = StringEntity.new(@body) unless @body.nil?
 
           unless @username.nil?
@@ -40,10 +40,18 @@ module HTTP
           end
         end
 
+        def parse_uri
+          uri = URI.parse(@uri)
+          [uri.scheme, uri.host, uri.port, uri.path]
+        rescue URI::InvalidURIError
+          [nil, nil, nil, @uri]
+        end
+
         private
-        define_method(:create_native_request) do |uri_builder, encoding|
+        define_method(:create_native_request) do |encoding|
           params = @params.collect { |key, value| BasicNameValuePair.new(key.to_s, value.to_s) }
-          request = native_request_factory.call(uri_builder, @path, params, encoding)
+          scheme, host, port, path = parse_uri
+          request = native_request_factory.call(scheme, host, port, path, params, encoding)
 
           @headers.each { |name, value| request.add_header(name.to_s, value.to_s) }
 
@@ -53,24 +61,23 @@ module HTTP
     end
   end
 
-  Post = Request.create_type do |uri_builder, path, params, encoding|
-    post = HttpPost.new(uri_builder.create_uri(path))
+  Post = Request.create_type do |scheme, host, port, path, params, encoding|
+    post = HttpPost.new(URIUtils.create_uri(scheme, host, port, path, nil, nil))
     post.entity = UrlEncodedFormEntity.new(params, encoding)
     post
   end
 
-  Get = Request.create_type do |uri_builder, path, params, encoding|
+  Get = Request.create_type do |scheme, host, port, path, params, encoding|
     query_string = URLEncodedUtils.format(params, encoding)
-    get = HttpGet.new(uri_builder.create_uri(path, query_string))
-    get
+    HttpGet.new(URIUtils.create_uri(scheme, host, port, path, query_string, nil))
   end
 
-  Delete = Request.create_type do |uri_builder, path|
-    HttpDelete.new(uri_builder.create_uri(path))
+  Delete = Request.create_type do |scheme, host, port, path|
+    HttpDelete.new(URIUtils.create_uri(scheme, host, port, path, nil, nil))
   end
 
-  Put = Request.create_type do |uri_builder, path|
-    HttpPut.new(uri_builder.create_uri(path))
+  Put = Request.create_type do |scheme, host, port, path|
+    HttpPut.new(URIUtils.create_uri(scheme, host, port, path, nil, nil))
   end
 
   private

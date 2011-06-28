@@ -19,7 +19,6 @@ module HTTP
         @response_handler = BasicResponseHandler.new
       end
 
-      @uri_builder = URIBuilder.new(nil, nil, nil, "")
       @encoding = options[:encoding] || "UTF-8"
 
       # Set options from the rest of the options-hash
@@ -50,24 +49,11 @@ module HTTP
     def execute(request)
       client = DefaultHttpClient.new(params)
 
-      request.make_native_request(client, @uri_builder, @encoding, @response_handler)
+      request.make_native_request(client, @encoding, @response_handler)
     rescue SocketTimeoutException
       raise Timeout::Error, "timed out after #{so_timeout} ms"
     ensure
       client.connection_manager.shutdown
-    end
-  end
-
-  class URIBuilder
-    def initialize(protocol, host, port, base_path)
-      @protocol = protocol
-      @host = host
-      @port = port
-      @base_path = base_path
-    end
-
-    def create_uri(path, query_string = nil)
-      URIUtils.create_uri(@protocol, @host, @port, "#{@base_path}#{path}", query_string, nil)
     end
   end
 end

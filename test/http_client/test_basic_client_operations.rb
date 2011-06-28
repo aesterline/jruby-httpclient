@@ -25,6 +25,30 @@ class TestBasicClientOperations < Test::Unit::TestCase
     assert_equal("put", result)
   end
 
+  def test_can_get_full_url
+    result = @client.get("http://localhost:8080/echo", :content => "hello")
+
+    assert_equal("hello", result)
+  end
+
+  def test_can_post_full_url
+    result = @client.post("http://localhost:8080/echo", :content => "hello")
+
+    assert_equal("hello", result)
+  end
+
+  def test_can_delete_full_url
+    result = @client.delete("http://localhost:8080/echo")
+
+    assert_equal("delete", result)
+  end
+
+  def test_can_put_full_url
+    result = @client.put("http://localhost:8080/echo")
+
+    assert_equal("put", result)
+  end
+
   def setup
     @client = HTTP::Client.new(:default_host => "http://localhost:8080")
   end
