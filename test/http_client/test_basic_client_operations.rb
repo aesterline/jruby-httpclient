@@ -26,6 +26,6 @@ class TestBasicClientOperations < Test::Unit::TestCase
   end
 
   def setup
-    @client = HTTP::Client.new(:host => "localhost", :port => 8080)
+    @client = HTTP::Client.new(:default_host => "http://localhost:8080")
   end
 end
