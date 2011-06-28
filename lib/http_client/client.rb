@@ -11,6 +11,7 @@ module HTTP
   AuthPNames             = org.apache.http.auth.params.AuthPNames
   ClientPNames           = org.apache.http.client.params.ClientPNames
   SocketTimeoutException = java.net.SocketTimeoutException
+
   class Client    
     CLIENT_PARAMETERS = {
       :protocol_version         => HTTP::CoreProtocolPNames::PROTOCOL_VERSION,

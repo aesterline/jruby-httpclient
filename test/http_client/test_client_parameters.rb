@@ -53,7 +53,7 @@ class TestClientParameters < Test::Unit::TestCase
     assert_equal("hello", result)
   end
   
-  def test_user_agent
+  def test_tcp_nodelay
     client = HTTP::Client.new(:host => "localhost", :port => 8080, :tcp_nodelay => true)
     result = client.get("/echo", :content => "hello")
     assert_equal(client.tcp_nodelay, true)
