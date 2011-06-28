@@ -192,4 +192,10 @@ class TestClientParameters < Test::Unit::TestCase
     assert_equal(client.default_host.to_s, "http://127.0.0.1:80")
     assert_equal("hello", result)
   end
+  
+  def test_disable_response_handler
+    client = HTTP::Client.new(:host => "localhost", :port => 8080, :disable_response_handler => true)
+    result = client.get("/echo", :content => "hello")
+    assert_equal(Java::OrgApacheHttpMessage::BasicHttpResponse, result.class)
+  end
 end

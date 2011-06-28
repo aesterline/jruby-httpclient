@@ -93,7 +93,7 @@ module HTTP
       elsif options[:response_handler]
         @response_handler = options[:response_handler]
       else
-        BasicResponseHandler.new
+        @response_handler = BasicResponseHandler.new
       end
       
       @uri_builder = URIBuilder.new(protocol, host, port, base_path)
@@ -161,9 +161,9 @@ module HTTP
     end
 
     def execute(request)
-      client = DefaultHttpClient.new(create_client_params)
+      client = DefaultHttpClient.new(@params)
 
-      request.make_native_request(client, @uri_builder, @encoding)
+      request.make_native_request(client, @uri_builder, @encoding, @response_handler)
     rescue SocketTimeoutException
       raise Timeout::Error, "timed out after #{so_timeout} ms"
     ensure
