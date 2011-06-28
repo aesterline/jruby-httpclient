@@ -8,7 +8,14 @@ module HTTP
       SERVER.mount('/echo_header', HeaderEchoServlet)
       SERVER.mount('/protected', ProtectedServlet)
       SERVER.mount('/body', BodyServlet)
+      SERVER.mount('/redirect', RedirectServlet)
       Thread.new { SERVER.start }
+    end
+
+    class RedirectServlet < WEBrick::HTTPServlet::AbstractServlet
+      def do_GET(request, response)
+        response.set_redirect(WEBrick::HTTPStatus::MovedPermanently, "/echo?content=#{request.query['content']}")
+      end
     end
 
     class BodyServlet < WEBrick::HTTPServlet::AbstractServlet
