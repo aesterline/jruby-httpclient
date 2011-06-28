@@ -51,4 +51,3 @@ pkg
 *.ipr
 *.iws
 .rakeTasks
-*.gemspec
