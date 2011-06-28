@@ -21,14 +21,18 @@ module HTTP
           @password = password
         end
 
-        def make_native_request(client, uri_builder, encoding)
+        def make_native_request(client, uri_builder, encoding, handler=nil)
           request = create_native_request(uri_builder, encoding)
 
           unless @username.nil?
             client.credentials_provider.set_credentials(AuthScope::ANY, UsernamePasswordCredentials.new(@username, @password))
           end
 
-          client.execute(request, BasicResponseHandler.new)
+          if handler
+            client.execute(request, handler)
+          else
+            client.execute(request)
+          end
         end
 
         private
