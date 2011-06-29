@@ -9,12 +9,6 @@ class TestClientConfiguration < Test::Unit::TestCase
     end
   end
 
-  def test_disable_response_handler
-    client = HTTP::Client.new(:default_host => "http://localhost:8080", :disable_response_handler => true)
-    result = client.get("/echo", :content => "hello")
-    assert_equal(Java::OrgApacheHttpMessage::BasicHttpResponse, result.class)
-  end
-
   def test_protocol_version
     config = HTTP::ClientConfiguration.new(:protocol_version => "HTTP 1.0")
     assert_equal(config.protocol_version.to_s, "HTTP/1.0")

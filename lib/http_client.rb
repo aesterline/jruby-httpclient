@@ -13,5 +13,6 @@ require 'httpclient-4.1.1'
 require 'httpclient-cache-4.1.1'
 
 require 'client_configuration'
+require 'response'
 require 'methods'
 require 'client'

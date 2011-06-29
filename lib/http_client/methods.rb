@@ -26,7 +26,7 @@ module HTTP
       @password = password
     end
 
-    def make_native_request(client, handler=nil)
+    def make_native_request(client)
       request = create_native_request
 
       request.entity = StringEntity.new(@body) unless @body.nil?
@@ -36,11 +36,7 @@ module HTTP
         client.credentials_provider.set_credentials(AuthScope::ANY, UsernamePasswordCredentials.new(@username, @password))
       end
 
-      if handler
-        client.execute(request, handler)
-      else
-        client.execute(request)
-      end
+      HTTP::Response.new(client.execute(request))
     end
 
     private

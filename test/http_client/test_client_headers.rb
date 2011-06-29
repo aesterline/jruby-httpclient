@@ -6,7 +6,7 @@ class TestClientHeaders < Test::Unit::TestCase
     get.add_headers(:test_header => "get testing")
 
     response = @client.execute(get)
-    assert_equal("get testing", response)
+    assert_equal("get testing", response.body)
   end
 
   def test_post_headers
@@ -14,7 +14,7 @@ class TestClientHeaders < Test::Unit::TestCase
     get.add_headers(:test_header => "post testing")
 
     response = @client.execute(get)
-    assert_equal("post testing", response)
+    assert_equal("post testing", response.body)
   end
 
   def test_delete_headers
@@ -22,7 +22,7 @@ class TestClientHeaders < Test::Unit::TestCase
     get.add_headers(:test_header => "post testing")
 
     response = @client.execute(get)
-    assert_equal("post testing", response)
+    assert_equal("post testing", response.body)
   end
 
   def test_put_headers
@@ -30,7 +30,7 @@ class TestClientHeaders < Test::Unit::TestCase
     get.add_headers(:test_header => "post testing")
 
     response = @client.execute(get)
-    assert_equal("post testing", response)
+    assert_equal("post testing", response.body)
   end
 
   def test_multiple_calls_to_add_headers_should_prefer_last_set_of_headers
@@ -39,7 +39,7 @@ class TestClientHeaders < Test::Unit::TestCase
     get.add_headers(:test_header => "should prefer this one")
 
     response = @client.execute(get)
-    assert_equal("should prefer this one", response)
+    assert_equal("should prefer this one", response.body)
   end
 
   def test_should_be_able_to_add_content_type
@@ -47,7 +47,7 @@ class TestClientHeaders < Test::Unit::TestCase
     get.content_type = 'text/xml'
 
     response = @client.execute(get)
-    assert_equal('text/xml', response)
+    assert_equal('text/xml', response.body)
   end
 
   def setup

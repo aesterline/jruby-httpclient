@@ -5,16 +5,16 @@ class RequestEntityTest < Test::Unit::TestCase
     post = HTTP::Post.new("/body")
     post.body = "Here we are"
 
-    result = @client.execute(post)
-    assert_equal("Here we are", result)
+    response = @client.execute(post)
+    assert_equal("Here we are", response.body)
   end
 
   def test_put_request_body
     post = HTTP::Put.new("/body")
     post.body = "We are there"
 
-    result = @client.execute(post)
-    assert_equal("We are there", result)
+    response = @client.execute(post)
+    assert_equal("We are there", response.body)
   end
 
   def setup

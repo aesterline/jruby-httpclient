@@ -1,13 +1,11 @@
 require 'helper'
 
-class BasicAuthTest < Test::Unit::TestCase
-  def test_get_can_authenticate
-    get = HTTP::Get.new("/protected")
-    get.basic_auth("user", "Password")
+class ResponseTest < Test::Unit::TestCase
 
+  def test_response_body
+    get = HTTP::Get.new("/echo", :content => "baz")
     response = @client.execute(get)
-
-    assert_equal("Logged In", response.body)
+    assert_equal("baz", response.body)
   end
 
   def setup
