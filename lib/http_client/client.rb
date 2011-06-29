@@ -5,12 +5,7 @@ module HTTP
   SocketTimeoutException = java.net.SocketTimeoutException
 
   class Client
-    DEFAULT_TIMEOUT = 30_000
-    include HTTP::Parameters
-
     def initialize(options = {})
-      self.so_timeout = DEFAULT_TIMEOUT
-
       if options[:disable_response_handler]
         @response_handler = nil
       elsif options[:response_handler]
@@ -21,13 +16,7 @@ module HTTP
 
       @encoding = options[:encoding] || "UTF-8"
 
-      # Set options from the rest of the options-hash
-      options.each do |parameter_name, parameter_value|
-        setter_name = "#{parameter_name}="
-        self.send(setter_name, parameter_value) if self.respond_to?(setter_name)
-      end
-
-      @client = DefaultHttpClient.new(params)
+      @client = HTTP::ClientConfiguration.new(options).build_http_client
     end
 
     # Request Methods
@@ -50,8 +39,8 @@ module HTTP
 
     def execute(request)
       request.make_native_request(@client, @encoding, @response_handler)
-    rescue SocketTimeoutException
-      raise Timeout::Error, "timed out after #{so_timeout} ms"
+    rescue SocketTimeoutException => e
+      raise Timeout::Error, e.message
     end
 
     def shutdown
