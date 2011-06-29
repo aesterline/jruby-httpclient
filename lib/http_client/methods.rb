@@ -4,9 +4,13 @@ module HTTP
   class Request
     def self.create_type(&native_request_factory)
       Class.new do
+        attr_accessor :body, :encoding
+
         def initialize(uri, params = {})
           @uri = uri
           @params = params
+          @encoding = "UTF-8"
+
           @headers = {}
         end
 
@@ -18,17 +22,13 @@ module HTTP
           add_headers({'content-type' => type})
         end
 
-        def body=(request_body)
-          @body = request_body
-        end
-
         def basic_auth(username, password)
           @username = username
           @password = password
         end
 
-        def make_native_request(client, encoding, handler=nil)
-          request = create_native_request(encoding)
+        def make_native_request(client, handler=nil)
+          request = create_native_request
           request.entity = StringEntity.new(@body) unless @body.nil?
 
           unless @username.nil?
@@ -50,12 +50,12 @@ module HTTP
         end
 
         private
-        define_method(:create_native_request) do |encoding|
+        define_method(:create_native_request) do
           scheme, host, port, path, query = parse_uri
           query_params = CGI.parse(query || "").merge(@params)
 
           params = query_params.collect { |key, value| BasicNameValuePair.new(key.to_s, value.to_s) }
-          request = native_request_factory.call(scheme, host, port, path, params, encoding)
+          request = native_request_factory.call(scheme, host, port, path, params, @encoding)
 
           @headers.each { |name, value| request.add_header(name.to_s, value.to_s) }
 

@@ -14,8 +14,6 @@ module HTTP
         @response_handler = BasicResponseHandler.new
       end
 
-      @encoding = options[:encoding] || "UTF-8"
-
       @client = HTTP::ClientConfiguration.new(options).build_http_client
     end
 
@@ -38,7 +36,7 @@ module HTTP
     end
 
     def execute(request)
-      request.make_native_request(@client, @encoding, @response_handler)
+      request.make_native_request(@client, @response_handler)
     rescue SocketTimeoutException => e
       raise Timeout::Error, e.message
     end
