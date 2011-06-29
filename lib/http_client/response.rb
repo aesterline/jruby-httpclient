@@ -3,7 +3,7 @@ module HTTP
     attr_reader :body, :status_code
 
     def initialize(native_response)
-      @status_code = native_response.get_status_line.get_status_code
+      @status_code = native_response.status_line.status_code
       @body = EntityUtils.to_string(native_response.entity)
     end
   end
