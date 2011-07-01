@@ -1,6 +1,6 @@
 require 'helper'
 
-class TestClientHeaders < Test::Unit::TestCase
+class ClientHeadersTest < Test::Unit::TestCase
   def test_get_headers
     get = HTTP::Get.new("/echo_header")
     get.add_headers(:test_header => "get testing")

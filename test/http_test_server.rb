@@ -11,7 +11,14 @@ module HTTP
       SERVER.mount('/redirect', RedirectServlet)
       SERVER.mount('/set_cookie', SetCookieServlet)
       SERVER.mount('/echo_cookie', EchoCookieServlet)
+      SERVER.mount('/set_header', SetHeaderServlet)
       Thread.new { SERVER.start }
+    end
+
+    class SetHeaderServlet < WEBrick::HTTPServlet::AbstractServlet
+      def do_GET(request, response)
+        response["Test-Header"] = "FooBar"
+      end
     end
 
     class SetCookieServlet < WEBrick::HTTPServlet::AbstractServlet

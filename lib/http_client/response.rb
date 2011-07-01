@@ -1,10 +1,15 @@
 module HTTP
   class Response
-    attr_reader :body, :status_code
+    attr_reader :body, :status_code, :headers
 
     def initialize(native_response)
       @status_code = native_response.status_line.status_code
       @body = EntityUtils.to_string(native_response.entity)
+
+      @headers = native_response.all_headers.inject({}) do |map, header|
+        map[header.name] = header.value
+        map
+      end
     end
   end
 
