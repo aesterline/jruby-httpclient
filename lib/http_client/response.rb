@@ -1,15 +1,18 @@
 module HTTP
   class Response
-    attr_reader :body, :status_code, :headers
+    attr_reader :headers
 
     def initialize(native_response)
-      @status_code = native_response.status_line.status_code
-      @body = EntityUtils.to_string(native_response.entity)
+      @native_response = native_response
+      @headers = Headers.new(native_response)
+    end
 
-      @headers = native_response.all_headers.inject({}) do |map, header|
-        map[header.name] = header.value
-        map
-      end
+    def body
+      @body ||= EntityUtils.to_string(@native_response.entity)
+    end
+
+    def status_code
+      @native_response.status_line.status_code
     end
   end
 
@@ -66,4 +69,14 @@ module HTTP
 
   private
   EntityUtils = org.apache.http.util.EntityUtils
+
+  class Headers
+    def initialize(native_response)
+      @native_response = native_response
+    end
+
+    def [](header_name)
+      @native_response.get_first_header(header_name).value
+    end
+  end
 end
