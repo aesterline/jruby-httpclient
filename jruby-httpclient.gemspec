@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{jruby-httpclient}
-  s.version = "0.3.0"
+  s.version = "0.4.0"
   s.platform = Gem::Platform.new([nil, "java", nil])
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Adam Esterline"]
-  s.date = %q{2011-06-28}
+  s.date = %q{2011-07-01}
   s.description = %q{An HTTP client designed for use with JRuby in a threaded environment}
   s.email = %q{adam@esterlines.com}
   s.extra_rdoc_files = [
@@ -28,16 +28,19 @@ Gem::Specification.new do |s|
     "jruby-httpclient.gemspec",
     "lib/http_client.rb",
     "lib/http_client/client.rb",
-    "lib/http_client/methods.rb",
     "lib/http_client/client_configuration.rb",
+    "lib/http_client/methods.rb",
+    "lib/http_client/response.rb",
     "test/helper.rb",
     "test/http_client/test_basic_auth.rb",
     "test/http_client/test_basic_client_operations.rb",
-    "test/http_client/test_client_headers.rb",
     "test/http_client/test_client_configuration.rb",
+    "test/http_client/test_client_headers.rb",
     "test/http_client/test_cookies.rb",
     "test/http_client/test_redirect.rb",
     "test/http_client/test_request_entity.rb",
+    "test/http_client/test_response.rb",
+    "test/http_client/test_server_headers.rb",
     "test/http_test_server.rb",
     "vendor/commons-codec-1.4.jar",
     "vendor/commons-logging-1.1.1.jar",
