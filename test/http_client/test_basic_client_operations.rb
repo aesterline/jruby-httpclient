@@ -61,6 +61,14 @@ class TestBasicClientOperations < Test::Unit::TestCase
     assert_equal("bar", result)
   end
 
+  def test_timeout
+    client = HTTP::Client.new(:default_host => "http://localhost:8080", :timeout_in_seconds => 2)
+
+    assert_raises(Timeout::Error) do
+      client.get("/slow", :sleep => "30")
+    end
+  end
+
   def setup
     @client = HTTP::Client.new(:default_host => "http://localhost:8080")
   end

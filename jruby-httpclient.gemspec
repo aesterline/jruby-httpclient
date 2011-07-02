@@ -38,7 +38,7 @@ Gem::Specification.new do |s|
     "test/http_client/test_client_headers.rb",
     "test/http_client/test_cookies.rb",
     "test/http_client/test_redirect.rb",
-    "test/http_client/test_request_entity.rb",
+    "test/http_client/test_request_body.rb",
     "test/http_client/test_response.rb",
     "test/http_client/test_server_headers.rb",
     "test/http_test_server.rb",

@@ -16,7 +16,7 @@ class CookieTest < Test::Unit::TestCase
   end
 
   def setup
-    @client = HTTP::Client.new(:default_host => "http://localhost:8080", :cookie_policy => HTTP::CookiePolicy::BROWSER_COMPATIBILITY)
+    @client = HTTP::Client.new(:default_host => "http://localhost:8080")
   end
 
   def teardown
