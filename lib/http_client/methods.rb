@@ -36,7 +36,7 @@ module HTTP
         client.credentials_provider.set_credentials(AuthScope::ANY, UsernamePasswordCredentials.new(@username, @password))
       end
 
-      HTTP::Response.new(client.execute(request))
+      HTTP::Response.new(client.execute(request), client.cookie_store.cookies)
     end
 
     private
