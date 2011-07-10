@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{jruby-httpclient}
-  s.version = "0.4.0"
+  s.version = "1.0.0"
   s.platform = Gem::Platform.new([nil, "java", nil])
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Adam Esterline"]
-  s.date = %q{2011-07-01}
+  s.date = %q{2011-07-10}
   s.description = %q{An HTTP client designed for use with JRuby in a threaded environment}
   s.email = %q{adam@esterlines.com}
   s.extra_rdoc_files = [
@@ -27,14 +27,18 @@ Gem::Specification.new do |s|
     "VERSION",
     "jruby-httpclient.gemspec",
     "lib/http_client.rb",
-    "lib/http_client/client.rb",
-    "lib/http_client/client_configuration.rb",
-    "lib/http_client/methods.rb",
-    "lib/http_client/response.rb",
+    "lib/http_client/jruby/client.rb",
+    "lib/http_client/jruby/client_configuration.rb",
+    "lib/http_client/jruby/methods.rb",
+    "lib/http_client/jruby/response.rb",
+    "lib/http_client/mri/client.rb",
+    "lib/http_client/mri/methods.rb",
+    "lib/http_client/mri/response.rb",
+    "lib/http_client/status.rb",
     "test/helper.rb",
+    "test/http_client/jruby/test_client_configuration.rb",
     "test/http_client/test_basic_auth.rb",
     "test/http_client/test_basic_client_operations.rb",
-    "test/http_client/test_client_configuration.rb",
     "test/http_client/test_client_headers.rb",
     "test/http_client/test_cookies.rb",
     "test/http_client/test_redirect.rb",
