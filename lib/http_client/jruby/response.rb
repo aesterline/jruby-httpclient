@@ -28,6 +28,16 @@ module HTTP
     def [](header_name)
       @native_response.get_first_header(header_name).value
     end
+    
+    def to_hash
+      Hash[ @native_response.get_all_headers.map{ |h| [h.get_name, h.get_value] } ]
+    end
+    
+    def each
+      i = @native_response.get_all_headers.each do |h|
+        yield h.get_name, h.get_value
+      end
+    end
   end
 
   class Cookies
