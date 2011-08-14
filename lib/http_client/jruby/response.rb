@@ -26,7 +26,7 @@ module HTTP
     end
 
     def [](header_name)
-      @native_response.get_first_header(header_name).value
+      @native_response.get_headers(header_name).map{|h| h.get_value}.join(", ")
     end
     
     def to_hash
