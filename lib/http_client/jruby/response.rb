@@ -29,6 +29,10 @@ module HTTP
       @native_response.get_headers(header_name).map{|h| h.get_value}.join(", ")
     end
     
+    def to_s
+      @native_response.get_all_headers.map(&:to_s).join("\n")
+    end
+    
     def to_hash
       hash = {}
       each do |name, value|
