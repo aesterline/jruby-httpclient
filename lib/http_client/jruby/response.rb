@@ -30,7 +30,11 @@ module HTTP
     end
     
     def to_hash
-      Hash[ @native_response.get_all_headers.map{ |h| [h.get_name, h.get_value] } ]
+      hash = {}
+      each do |name, value|
+        hash[name] = hash[name] ? hash[name] + ", #{value}" : value
+      end
+      hash
     end
     
     def each
