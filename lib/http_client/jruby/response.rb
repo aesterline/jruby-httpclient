@@ -42,7 +42,7 @@ module HTTP
     end
     
     def each
-      @native_response.get_all_headers.each do |h|
+      @native_response.header_iterator.each do |h|
         yield h.get_name, h.get_value
       end
     end
