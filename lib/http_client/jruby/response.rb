@@ -9,7 +9,12 @@ module HTTP
     end
 
     def body
-      @body ||= EntityUtils.to_string(@native_response.entity)
+      # HTTP HEAD requests have no entity, nor any body
+      if @native_response.entity
+        @body ||= EntityUtils.to_string(@native_response.entity)
+      else
+        nil
+      end
     end
 
     def status_code
