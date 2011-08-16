@@ -9,7 +9,12 @@ module HTTP
     end
 
     def body
-      @body ||= EntityUtils.to_string(@native_response.entity)
+      # HTTP HEAD requests have no entity, nor any body
+      if @native_response.entity
+        @body ||= EntityUtils.to_string(@native_response.entity)
+      else
+        nil
+      end
     end
 
     def status_code
@@ -26,15 +31,23 @@ module HTTP
     end
 
     def [](header_name)
-      @native_response.get_first_header(header_name).value
+      @native_response.get_headers(header_name).map{|h| h.get_value}.join(", ")
+    end
+    
+    def to_s
+      @native_response.get_all_headers.map(&:to_s).join("\n")
     end
     
     def to_hash
-      Hash[ @native_response.get_all_headers.map{ |h| [h.get_name, h.get_value] } ]
+      hash = {}
+      each do |name, value|
+        hash[name] = hash[name] ? hash[name] + ", #{value}" : value
+      end
+      hash
     end
     
     def each
-      @native_response.get_all_headers.each do |h|
+      @native_response.header_iterator.each do |h|
         yield h.get_name, h.get_value
       end
     end

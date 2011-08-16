@@ -12,6 +12,14 @@ module HTTP
     def get(params, options = {})
       read_response(Get.new(params, options))
     end
+    
+    def head(params, options = {})
+      read_response(Head.new(params, options))
+    end
+    
+    def options(params, options = {})
+      read_response(Options.new(params, options))
+    end
 
     def post(params, options = {})
       read_response(Post.new(params, options))

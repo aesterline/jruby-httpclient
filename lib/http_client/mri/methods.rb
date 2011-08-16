@@ -59,6 +59,42 @@ module HTTP
       params_as_hash.map { |name, value| "#{URI.encode(name.to_s)}=#{URI.encode(value.to_s)}" }.join("&")
     end
   end
+  
+  class Head < Request
+    def create_request
+      host, port, path, query = parse_uri
+      head = Net::HTTP::Head.new("#{path}?#{query || to_query_string(@params)}")
+      [host, port, head]
+    end
+
+    def to_query_string(params_as_hash)
+      params_as_hash.map { |name, value| "#{URI.encode(name.to_s)}=#{URI.encode(value.to_s)}" }.join("&")
+    end
+  end
+  
+  class Options < Request
+    def create_request
+      host, port, path, query = parse_uri
+      options = Net::HTTP::Options.new("#{path}?#{query || to_query_string(@params)}")
+      [host, port, options]
+    end
+
+    def to_query_string(params_as_hash)
+      params_as_hash.map { |name, value| "#{URI.encode(name.to_s)}=#{URI.encode(value.to_s)}" }.join("&")
+    end
+  end
+
+  class Patch < Request
+    def create_request
+      host, port, path, query = parse_uri
+      patch = Net::HTTP::Patch.new("#{path}?#{query || to_query_string(@params)}")
+      [host, port, patch]
+    end
+
+    def to_query_string(params_as_hash)
+      params_as_hash.map { |name, value| "#{URI.encode(name.to_s)}=#{URI.encode(value.to_s)}" }.join("&")
+    end
+  end
 
   class Post < Request
     def create_request

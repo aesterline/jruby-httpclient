@@ -67,6 +67,20 @@ module HTTP
     end
   end
 
+  class Head < Request
+    def create_native_request
+      query_string = URLEncodedUtils.format(@query_params, encoding)
+      HttpHead.new(create_uri(query_string))
+    end
+  end
+
+  class Options < Request
+    def create_native_request
+      query_string = URLEncodedUtils.format(@query_params, encoding)
+      HttpOptions.new(create_uri(query_string))
+    end
+  end
+
   class Delete < Request
     def create_native_request
       HttpDelete.new(create_uri)
@@ -81,6 +95,8 @@ module HTTP
 
   private
   HttpGet = org.apache.http.client.methods.HttpGet
+  HttpHead = org.apache.http.client.methods.HttpHead
+  HttpOptions = org.apache.http.client.methods.HttpOptions
   HttpPost = org.apache.http.client.methods.HttpPost
   HttpDelete = org.apache.http.client.methods.HttpDelete
   HttpPut = org.apache.http.client.methods.HttpPut
