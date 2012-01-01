@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{jruby-httpclient}
-  s.version = "1.0.0"
+  s.version = "1.1.0"
   s.platform = Gem::Platform.new([nil, "java", nil])
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Adam Esterline"]
-  s.date = %q{2011-07-10}
+  s.authors = ["Adam Esterline", "Aaron Spiegel"]
+  s.date = %q{2012-01-01}
   s.description = %q{An HTTP client designed for use with JRuby in a threaded environment}
   s.email = %q{adam@esterlines.com}
   s.extra_rdoc_files = [
