@@ -20,7 +20,7 @@ Jeweler::Tasks.new do |gem|
   gem.summary = %Q{A thin wrapper around the Apache HttpClient}
   gem.description = %Q{An HTTP client designed for use with JRuby in a threaded environment}
   gem.email = "adam@esterlines.com"
-  gem.authors = ["Adam Esterline"]
+  gem.authors = ["Adam Esterline", "Aaron Spiegel"]
   gem.platform = Gem::Platform::JAVA
   # dependencies defined in Gemfile
 end
