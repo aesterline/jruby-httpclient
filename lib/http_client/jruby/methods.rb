@@ -6,8 +6,13 @@ module HTTP
 
     def initialize(uri, params = {})
       @scheme, @host, @port, @path, query = parse_uri(uri)
-      combined_params = CGI.parse(query || "").merge(params)
-      @query_params = combined_params.collect { |key, value| BasicNameValuePair.new(key.to_s, value.to_s) }
+
+      query_string_params = CGI.parse(query || "").collect do |key, value| 
+        value.collect { |v| BasicNameValuePair.new(key.to_s, v.to_s) }
+      end
+      post_params = params.collect { |key, value| BasicNameValuePair.new(key.to_s, value.to_s) }
+
+      @query_params = (query_string_params + post_params).flatten
 
       @encoding = "UTF-8"
       @headers = {}
