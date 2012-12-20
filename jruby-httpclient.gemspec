@@ -4,15 +4,15 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{jruby-httpclient}
-  s.version = "1.1.0"
+  s.name = "jruby-httpclient"
+  s.version = "1.1.1"
   s.platform = Gem::Platform.new([nil, "java", nil])
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Adam Esterline", "Aaron Spiegel"]
-  s.date = %q{2012-01-01}
-  s.description = %q{An HTTP client designed for use with JRuby in a threaded environment}
-  s.email = %q{adam@esterlines.com}
+  s.date = "2012-12-20"
+  s.description = "An HTTP client designed for use with JRuby in a threaded environment"
+  s.email = "adam@esterlines.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.rdoc"
@@ -53,11 +53,11 @@ Gem::Specification.new do |s|
     "vendor/httpcore-4.1.jar",
     "vendor/httpmime-4.1.1.jar"
   ]
-  s.homepage = %q{http://github.com/aesterline/jruby-httpclient}
+  s.homepage = "http://github.com/aesterline/jruby-httpclient"
   s.licenses = ["Apache 2.0"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.5.1}
-  s.summary = %q{A thin wrapper around the Apache HttpClient}
+  s.rubygems_version = "1.8.24"
+  s.summary = "A thin wrapper around the Apache HttpClient"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
