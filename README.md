@@ -8,10 +8,10 @@ not threadsafe in JRuby.    This project is an attempt to make a threadsafe HTTP
 ## Usage
 
 ```ruby
-  client = HTTP::Client.new(:host => "localhost", :port => 8080)
-  client.get("/src", :param => "value")
+client = HTTP::Client.new(:host => "localhost", :port => 8080)
+client.get("/src", :param => "value")
 
-  client.post("/create", :param => "value")
+client.post("/create", :param => "value")
 ```
 
 ## Contributing to jruby-httpclient
